@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.regex.Pattern;
 
 public class StateCensusAnalyzer {
-    private static int count = 0;
 
     private boolean isCSVFile(String filePath) {
         return Pattern.matches(".*\\.csv", filePath);
@@ -71,10 +71,32 @@ public class StateCensusAnalyzer {
                 .withIgnoreLeadingWhiteSpace(true)
                 .withSkipLines(1)
                 .withType(CSVStateCensus.class).build();
-
+        int count = 0;
         for (CSVStateCensus csvStateCensus : csvToBean) {
             count++;
             System.out.println(csvStateCensus);
+        }
+        return count;
+    }
+
+    public int readStateCodeCSVData(String FilePath) {
+        int count = 0;
+        try {
+            Files.newBufferedReader(Paths.get(FilePath));
+            Reader reader=Files.newBufferedReader(Paths.get(FilePath));
+            CsvToBean<CSVStates> csvToBean =
+                    new CsvToBeanBuilder<CSVStates>(reader)
+                            .withIgnoreLeadingWhiteSpace(true)
+                            .withSkipLines(1)
+                            .withType(CSVStates.class).build();
+
+            Iterator<CSVStates> csvIterator = csvToBean.iterator();
+            while(csvIterator.hasNext()) {
+                count++;
+                csvIterator.next();
+            }
+        }catch(Exception exception) {
+            exception.printStackTrace();
         }
         return count;
     }
