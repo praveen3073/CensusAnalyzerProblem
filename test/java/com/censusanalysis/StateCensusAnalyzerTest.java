@@ -120,4 +120,18 @@ public class StateCensusAnalyzerTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void givenStateCodeCSVFile_WhenDelimiterIncorrect_ShouldThrowStateAnalyzerException() {
+        try {
+            String INCORRECT_STATECODE_CSV_DELIMITER = "C:\\Users\\Praveen Satya\\IdeaProjects\\CensusAnalysisProblem\\src\\InvalidDelimStateCensusData.csv";
+            stateCensusAnalyzer.readStateCodeCSVData(INCORRECT_STATECODE_CSV_DELIMITER);
+        } catch (StateAnalyzerException e) {
+            e.printStackTrace();
+            Assert.assertEquals(StateAnalyzerException.ExceptionType.INVALID_DELIM
+                    , e.type);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

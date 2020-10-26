@@ -94,6 +94,12 @@ public class StateCensusAnalyzer {
             throw new StateAnalyzerException("Invalid File Type", StateAnalyzerException.ExceptionType.INVALID_FILE_TYPE);
 
         Reader reader = Files.newBufferedReader(Paths.get(filePath));
+        reader.mark(1000);
+
+        //Check CSV Delimiter
+        isCSVDelimiterCorrect(reader);
+
+        //Get Count
         CsvToBean<CSVStates> csvToBean =
                 new CsvToBeanBuilder<CSVStates>(reader)
                         .withIgnoreLeadingWhiteSpace(true)
