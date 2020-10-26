@@ -84,7 +84,26 @@ public class StateCensusAnalyzerTest {
     @Test
     public void givenStateCodesCSV_WhenRead_ShouldReturnCorrectRecordCount() {
         String STATECODE_CSV_PATH = "C:\\Users\\Praveen Satya\\IdeaProjects\\CensusAnalysisProblem\\src\\StateCode.csv";
-        int result = stateCensusAnalyzer.readStateCodeCSVData(STATECODE_CSV_PATH);
+        int result = 0;
+        try {
+            result = stateCensusAnalyzer.readStateCodeCSVData(STATECODE_CSV_PATH);
+        } catch (StateAnalyzerException | IOException e) {
+            e.printStackTrace();
+        }
         Assert.assertEquals(37, result);
+    }
+
+    @Test
+    public void givenStateCodesCSVFilePath_WhenIncorrect_ShouldThrowStateAnalyzerException() {
+        try {
+            String INCORRECT_STATECODE_CSV_PATH = "C:\\Users\\Praveen Satya\\IdeaProjects\\CensusAnalysisProblem\\StateCode.csv";
+            stateCensusAnalyzer.readStateCodeCSVData(INCORRECT_STATECODE_CSV_PATH);
+        } catch (StateAnalyzerException e) {
+            e.printStackTrace();
+            Assert.assertEquals(StateAnalyzerException.ExceptionType.INVALID_FILE_PATH,
+                    e.type);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

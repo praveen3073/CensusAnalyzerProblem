@@ -80,27 +80,27 @@ public class StateCensusAnalyzer {
         return count;
     }
 
-    public int readStateCodeCSVData(String FilePath) {
+    public int readStateCodeCSVData(String FilePath) throws IOException, StateAnalyzerException {
         try {
             Files.newBufferedReader(Paths.get(FilePath));
-            Reader reader = Files.newBufferedReader(Paths.get(FilePath));
-            CsvToBean<CSVStates> csvToBean =
-                    new CsvToBeanBuilder<CSVStates>(reader)
-                            .withIgnoreLeadingWhiteSpace(true)
-                            .withSkipLines(1)
-                            .withType(CSVStates.class).build();
-
-            Iterator<CSVStates> csvIterator = csvToBean.iterator();
-            int count = 0;
-            while (csvIterator.hasNext()) {
-                count++;
-                CSVStates csvStates = csvIterator.next();
-                System.out.println(csvStates);
-            }
-            return count;
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        } catch (IOException e) {
+            throw new StateAnalyzerException("Invalid Path Name",
+                    StateAnalyzerException.ExceptionType.INVALID_FILE_PATH);
         }
-        return 0;
+        Reader reader = Files.newBufferedReader(Paths.get(FilePath));
+        CsvToBean<CSVStates> csvToBean =
+                new CsvToBeanBuilder<CSVStates>(reader)
+                        .withIgnoreLeadingWhiteSpace(true)
+                        .withSkipLines(1)
+                        .withType(CSVStates.class).build();
+
+        Iterator<CSVStates> csvIterator = csvToBean.iterator();
+        int count = 0;
+        while (csvIterator.hasNext()) {
+            count++;
+            CSVStates csvStates = csvIterator.next();
+            System.out.println(csvStates);
+        }
+        return count;
     }
 }
