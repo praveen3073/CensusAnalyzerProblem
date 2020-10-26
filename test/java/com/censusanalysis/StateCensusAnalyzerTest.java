@@ -17,8 +17,23 @@ public class StateCensusAnalyzerTest {
     @Test
     public void givenCSV_WhenRead_ShouldReturnCorrectRecordCount() {
         try {
-            int result = stateCensusAnalyzer.readCSVData();
+            String CSV_PATH = "C:\\Users\\Praveen Satya\\IdeaProjects\\CensusAnalysisProblem\\src\\StateCensusData.csv";
+            int result = stateCensusAnalyzer.readCSVData(CSV_PATH);
             Assert.assertEquals(29, result);
+        } catch (IOException | StateAnalyzerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void givenCSVFilePath_WhenIncorrect_ShouldThrowStateAnalyzerException() {
+        try {
+            String INCORRECT_CSV_PATH = "C:\\Users\\Praveen Satya\\IdeaProjects\\CensusAnalysisProblem\\StateCensusData.csv";
+            stateCensusAnalyzer.readCSVData(INCORRECT_CSV_PATH);
+        } catch (StateAnalyzerException e) {
+            e.printStackTrace();
+            Assert.assertEquals(StateAnalyzerException.ExceptionType.INVALID_FILE_PATH,
+                    e.type);
         } catch (IOException e) {
             e.printStackTrace();
         }
