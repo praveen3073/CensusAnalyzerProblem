@@ -80,14 +80,20 @@ public class StateCensusAnalyzer {
         return count;
     }
 
-    public int readStateCodeCSVData(String FilePath) throws IOException, StateAnalyzerException {
+    public int readStateCodeCSVData(String filePath) throws IOException, StateAnalyzerException {
+        //Check File Path
         try {
-            Files.newBufferedReader(Paths.get(FilePath));
+            Files.newBufferedReader(Paths.get(filePath));
         } catch (IOException e) {
             throw new StateAnalyzerException("Invalid Path Name",
                     StateAnalyzerException.ExceptionType.INVALID_FILE_PATH);
         }
-        Reader reader = Files.newBufferedReader(Paths.get(FilePath));
+
+        //Check File Type
+        if (!isCSVFile(filePath))
+            throw new StateAnalyzerException("Invalid File Type", StateAnalyzerException.ExceptionType.INVALID_FILE_TYPE);
+
+        Reader reader = Files.newBufferedReader(Paths.get(filePath));
         CsvToBean<CSVStates> csvToBean =
                 new CsvToBeanBuilder<CSVStates>(reader)
                         .withIgnoreLeadingWhiteSpace(true)
