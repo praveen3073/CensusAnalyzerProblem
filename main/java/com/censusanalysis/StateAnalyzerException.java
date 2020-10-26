@@ -11,6 +11,7 @@ public class StateAnalyzerException extends Exception {
     public enum ExceptionType {
         INVALID_FILE_PATH,
         INVALID_FILE_TYPE,
-        INVALID_DELIM
+        INVALID_DELIM,
+        INVALID_HEADER
     }
 }

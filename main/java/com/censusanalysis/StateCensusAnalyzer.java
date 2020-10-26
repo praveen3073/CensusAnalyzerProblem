@@ -17,22 +17,56 @@ public class StateCensusAnalyzer {
         return Pattern.matches(".*\\.csv", filePath);
     }
 
+    private void isHeaderCorrect(Reader reader) throws StateAnalyzerException, IOException {
+        BufferedReader bufferedReader = new BufferedReader(reader);
+        String header;
+        if ((header = bufferedReader.readLine()) != null) {
+            String[] headerArray = header.split(",");
+            boolean flagCorrectHead = headerArray[0].equals("State") &&
+                    headerArray[1].equals("Population") &&
+                    headerArray[2].equals("AreaInSqKm") &&
+                    headerArray[3].equals("DensityPerSqKm");
+            if (!flagCorrectHead) {
+                throw new StateAnalyzerException("Invalid Headers",
+                        StateAnalyzerException.ExceptionType.INVALID_HEADER);
+            }
+        }
+    }
+
+    private void isCSVDelimiterCorrect(Reader reader) throws IOException, StateAnalyzerException {
+        String line;
+        BufferedReader bufferedReader = new BufferedReader(reader);
+        while ((line = bufferedReader.readLine()) != null) {
+            if (!line.contains(","))
+                throw new StateAnalyzerException("Invalid Delimiter", StateAnalyzerException.ExceptionType.INVALID_DELIM);
+        }
+    }
+
     public int readCSVData(String filePath) throws IOException, StateAnalyzerException {
+        //Check File Path
         try {
             Files.newBufferedReader(Paths.get(filePath));
         } catch (IOException e) {
             throw new StateAnalyzerException("Invalid Path Name",
                     StateAnalyzerException.ExceptionType.INVALID_FILE_PATH);
         }
-        if (isCSVFile(filePath) == false)
+
+        //Check File Type
+        if (!isCSVFile(filePath))
             throw new StateAnalyzerException("Invalid File Type", StateAnalyzerException.ExceptionType.INVALID_FILE_TYPE);
+
         Reader reader = Files.newBufferedReader(Paths.get(filePath));
-        BufferedReader bufferedReader = new BufferedReader(reader);
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-            if (!line.contains(","))
-                throw new StateAnalyzerException("Invalid Delimiter", StateAnalyzerException.ExceptionType.INVALID_DELIM);
-        }
+        reader.mark(1000);
+
+        //Check CSV Delimiter
+        isCSVDelimiterCorrect(reader);
+
+        //Check Headers
+        reader.reset();
+        isHeaderCorrect(reader);
+
+        //Get Records Count
+        reader.reset();
         CsvToBean<CSVStateCensus> csvToBean = new CsvToBeanBuilder<CSVStateCensus>(reader)
                 .withIgnoreLeadingWhiteSpace(true)
                 .withSkipLines(1)
