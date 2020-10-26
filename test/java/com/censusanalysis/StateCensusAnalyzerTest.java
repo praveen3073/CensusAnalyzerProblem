@@ -80,4 +80,11 @@ public class StateCensusAnalyzerTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void givenStateCodesCSV_WhenRead_ShouldReturnCorrectRecordCount() {
+        String STATECODE_CSV_PATH = "C:\\Users\\Praveen Satya\\IdeaProjects\\CensusAnalysisProblem\\src\\StateCode.csv";
+        int result = stateCensusAnalyzer.readStateCodeCSVData(STATECODE_CSV_PATH);
+        Assert.assertEquals(37, result);
+    }
 }
