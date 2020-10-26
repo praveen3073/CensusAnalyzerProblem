@@ -34,6 +34,22 @@ public class StateCensusAnalyzer {
         }
     }
 
+    private void isStateCodeHeaderCorrect(Reader reader) throws StateAnalyzerException, IOException {
+        BufferedReader bufferedReader = new BufferedReader(reader);
+        String header;
+        if ((header = bufferedReader.readLine()) != null) {
+            String[] headerArray = header.split(",");
+            boolean flagCorrectHead = headerArray[0].equals("SrNo") &&
+                    headerArray[1].equals("State Name") &&
+                    headerArray[2].equals("TIN") &&
+                    headerArray[3].equals("State Code");
+            if (!flagCorrectHead) {
+                throw new StateAnalyzerException("Invalid Headers",
+                        StateAnalyzerException.ExceptionType.INVALID_HEADER);
+            }
+        }
+    }
+
     private void isCSVDelimiterCorrect(Reader reader) throws IOException, StateAnalyzerException {
         String line;
         BufferedReader bufferedReader = new BufferedReader(reader);
@@ -99,7 +115,12 @@ public class StateCensusAnalyzer {
         //Check CSV Delimiter
         isCSVDelimiterCorrect(reader);
 
+        //Check Headers
+        reader.reset();
+        isStateCodeHeaderCorrect(reader);
+
         //Get Count
+        reader.reset();
         CsvToBean<CSVStates> csvToBean =
                 new CsvToBeanBuilder<CSVStates>(reader)
                         .withIgnoreLeadingWhiteSpace(true)
