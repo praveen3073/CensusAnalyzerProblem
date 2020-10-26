@@ -1,8 +1,14 @@
 package com.censusanalysis;
 
+import java.io.IOException;
+
 public class CensusAnalyzerMain {
     public static void main(String[] args) {
-        StateCensusAnalyzer stateCensusAnalyzer = new StateCensusAnalyzer();
-        stateCensusAnalyzer.readCSVData();
+        try {
+            StateCensusAnalyzer stateCensusAnalyzer = new StateCensusAnalyzer();
+            stateCensusAnalyzer.readCSVData();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
